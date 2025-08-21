@@ -45,6 +45,10 @@ const NewOrder = ({}) => {
   });
 
   const addToOrder = (item) => {
+    if (!item.inStock) {
+      alert("Item is not available at the moment");
+      return;
+    }
     setOrder((prev) => {
       const existing = prev.find((o) => o.id === item.id);
       if (existing) {
@@ -69,7 +73,7 @@ const NewOrder = ({}) => {
     if (order.length === 0) return;
 
     const newOrder = {
-      id: Date.now(), // unique id
+      id: sessionOrders.length + 1, // unique id
       items: order, // keep the items array bundled
       status: "Pending",
       total: order.reduce((acc, item) => acc + item.price * item.qty, 0),
