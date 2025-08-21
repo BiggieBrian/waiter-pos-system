@@ -11,7 +11,7 @@ const Orders = () => {
   }, []);
   return (
     <>
-      <div className="p-4">
+      <div className="">
         {sessionOrders.map((order) => (
           <OrderCard key={order.id} order={order} />
         ))}

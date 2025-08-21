@@ -84,65 +84,66 @@ const NewOrder = ({}) => {
 
   return (
     <>
-      <div className="border rounded-lg p-4 flex flex-col m-5 bg-gray-950">
-        <h2 className="text-lg font-semibold mb-4">Current Order</h2>
-        <div className="flex-1 overflow-y-auto space-y-2">
-          {order.length === 0 && <p className="text-gray-500">No items yet</p>}
-          {order.map((item) => (
-            <div key={item.id} className="flex justify-between items-center">
-              <div>
-                {item.name} x {item.qty}
-              </div>
-              <div className="flex items-center gap-2">
-                <span>Ksh {item.price * item.qty}</span>
-                <button
-                  className="bg-red-500 text-white px-2 py-1 rounded-md text-sm hover:bg-red-600"
-                  onClick={() => removeFromOrder(item.id)}
-                >
-                  Remove
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-        <div className="mt-4 border-t pt-2 flex justify-between font-semibold">
-          <span>Total</span>
-          <span>Ksh {totalPrice}</span>
-        </div>
-        <button
-          className="mt-4 w-full bg-emerald-500 text-white py-2 rounded-lg hover:bg-emerald-600"
-          onClick={() => {
-            confirmOrders(order);
-          }}
+      <div className="flex gap-2">
+        <input
+          type="text"
+          placeholder="Search for items..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="flex-1 border rounded-lg p-2"
+        />
+        <select
+          value={filter}
+          onChange={(e) => setFilter(e.target.value)}
+          className="border rounded-lg p-2"
         >
-          Confirm Order
-        </button>
+          <option>All</option>
+          <option>Main</option>
+          <option>Side</option>
+          <option>Drink</option>
+          <option>Dessert</option>
+        </select>
       </div>
-      <hr />
+      {order.length === 0 || (
+        <div className="border rounded-lg p-4 flex flex-col m-5 bg-black">
+          <h2 className="text-lg font-semibold mb-4">Current Order</h2>
+          <div className="flex-1 overflow-y-auto space-y-2">
+            {order.map((item) => (
+              <div key={item.id} className="flex justify-between items-center">
+                <div>
+                  {item.name} x {item.qty}
+                </div>
+                <div className="flex items-center gap-2">
+                  <span>Ksh {item.price * item.qty}</span>
+                  <button
+                    className="bg-red-500 text-white px-2 py-1 rounded-md text-sm hover:bg-red-600"
+                    onClick={() => removeFromOrder(item.id)}
+                  >
+                    Remove
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="mt-4 border-t pt-2 flex justify-between font-semibold">
+            <span>Total</span>
+            <span>Ksh {totalPrice}</span>
+          </div>
+          <button
+            className="mt-4 w-full bg-emerald-500 text-white py-2 rounded-lg hover:bg-emerald-600"
+            onClick={() => {
+              confirmOrders(order);
+            }}
+          >
+            Confirm Order
+          </button>
+        </div>
+      )}
+
       <div className="grid grid-cols-3 gap-4 p-4 my-4">
         {/* Left - Menu & Filters */}
         <div className="col-span-3 space-y-4">
           {/* Search & Filter */}
-          <div className="flex gap-2">
-            <input
-              type="text"
-              placeholder="Search for items..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="flex-1 border rounded-lg p-2"
-            />
-            <select
-              value={filter}
-              onChange={(e) => setFilter(e.target.value)}
-              className="border rounded-lg p-2"
-            >
-              <option>All</option>
-              <option>Main</option>
-              <option>Side</option>
-              <option>Drink</option>
-              <option>Dessert</option>
-            </select>
-          </div>
 
           {/* Menu Items */}
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">

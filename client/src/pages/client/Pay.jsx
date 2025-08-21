@@ -55,7 +55,7 @@ const Pay = ({ onSelect }) => {
           <button
             key={method.id}
             onClick={() => onSelect(method.id)}
-            className="flex flex-col items-center justify-center rounded-2xl shadow-md border border-gray-700 p-6 cursor-pointer"
+            className="flex flex-col items-center justify-center rounded-2xl shadow-md border bg-[#000000] p-6 cursor-pointer"
           >
             <div
               className={`w-14 h-14 flex items-center justify-center rounded-full text-white ${method.color}`}

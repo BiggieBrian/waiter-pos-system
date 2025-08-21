@@ -1,11 +1,11 @@
 const StatCard = ({ title, value }) => {
   return (
-    <div className="bg-black border border-gray-700 rounded-xl p-4 text-center text-white w-full max-w-sm mx-auto shadow-md">
+    <div className="bg-black border border-gray-700 rounded-xl p-4 text-center text-white  mx-auto shadow-md">
       {/* Title */}
-      <h3 className="text-sm text-gray-300">{title}</h3>
+      <h3 className="text-2xl text-gray-300">{title}</h3>
 
       {/* Value */}
-      <p className="text-emerald-500 text-xl font-bold mt-1">{value}</p>
+      <p className="text-emerald-500 text-3xl font-bold mt-1">{value}</p>
     </div>
   );
 };
