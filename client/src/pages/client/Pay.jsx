@@ -1,5 +1,6 @@
 import React from "react";
-import { totalSessionAmount } from "./Home";
+import { useState } from "react";
+import { useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faMoneyBillWave,
@@ -9,6 +10,14 @@ import {
 import { faCcVisa, faCcMastercard } from "@fortawesome/free-brands-svg-icons";
 
 const Pay = ({ onSelect }) => {
+  const [sessionOrders, setSessionOrders] = useState([]);
+  useEffect(() => {
+    const saved = JSON.parse(localStorage.getItem("Session Orders")) || [];
+    setSessionOrders(saved);
+  }, []);
+  const totalSessionAmount = () =>
+    sessionOrders.reduce((total, order) => total + order.total, 0);
+
   const methods = [
     {
       id: "cash",
@@ -39,7 +48,7 @@ const Pay = ({ onSelect }) => {
   return (
     <>
       <div className="text-6xl text-emerald-500 font-black flex justify-center py-4">
-        <h1>KES {totalSessionAmount()}</h1>
+        <h1>KES {totalSessionAmount() || 0}</h1>
       </div>
       <div className="grid grid-cols-1 gap-4 py-4">
         {methods.map((method) => (

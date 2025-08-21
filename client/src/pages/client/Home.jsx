@@ -1,18 +1,17 @@
 import React from "react";
 import { StatCard } from "../../components/StatCard";
-import { orders } from "./Orders";
 import { useEffect } from "react";
 import { useState } from "react";
 
-const totalSessionAmount = () => {
-  let sum = 0;
-  orders.forEach((order) => {
-    sum += order.total;
-  });
-  return sum;
-};
-
 const Home = () => {
+  const [sessionOrders, setSessionOrders] = useState([]);
+  useEffect(() => {
+    const saved = JSON.parse(localStorage.getItem("Session Orders")) || [];
+    setSessionOrders(saved);
+  }, []);
+  const totalSessionAmount = () =>
+    sessionOrders.reduce((total, order) => total + order.total, 0);
+
   const [profile, setProfile] = useState({ name: "", mobile: "" });
   useEffect(() => {
     const storedProfile = JSON.parse(localStorage.getItem("Profile Details"));
@@ -28,10 +27,10 @@ const Home = () => {
       </div>
       <br />
       <div className="p-4 space-y-4">
-        <StatCard title="Total Orders Made" value={orders.length} />
+        <StatCard title="Total Orders Made" value={sessionOrders.length} />
         <StatCard
           title="Total Session Amount"
-          value={`KES ${totalSessionAmount()}`}
+          value={`KES ${totalSessionAmount() || 0}`}
         />
       </div>
     </>
@@ -39,4 +38,3 @@ const Home = () => {
 };
 
 export { Home };
-export { totalSessionAmount };

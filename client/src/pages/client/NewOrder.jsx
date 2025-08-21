@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { MenuItemCard } from "../../components/MenuItemCard";
+import { useNavigate } from "react-router";
 
 const menuItems = [
   {
@@ -22,10 +23,19 @@ const menuItems = [
   },
 ];
 
-const NewOrder = () => {
+const NewOrder = ({}) => {
+  const navigate = useNavigate();
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("All");
   const [order, setOrder] = useState([]);
+  const [sessionOrders, setSessionOrders] = useState(() => {
+    const saved = localStorage.getItem("Session Orders");
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  const addToSessionOrders = (order) => {
+    setSessionOrders((prev) => [...prev, order]);
+  };
 
   const filteredItems = menuItems.filter((item) => {
     return (
@@ -34,40 +44,47 @@ const NewOrder = () => {
     );
   });
 
-  // const addToOrder = (item) => {
-  //   setOrder((prev) => {
-  //     const existing = prev.find((o) => o.id === item.id);
-  //     if (existing) {
-  //       return prev.map((o) =>
-  //         o.id === item.id ? { ...o, qty: o.qty + 1 } : o
-  //       );
-  //     }
-  //     return [...prev, { ...item, qty: 1 }];
-  //   });
-  // };
-
-  // const removeFromOrder = (id) => {
-  //   setOrder((prev) => prev.filter((item) => item.id !== id));
-  // };
-
-  // const totalPrice = order.reduce(
-  //   (acc, item) => acc + item.price * item.qty,
-  //   0
-  // );
-
   const addToOrder = (item) => {
     setOrder((prev) => {
-      if (!item.inStock) {
-        alert("Item is out of stock");
-        return;
+      const existing = prev.find((o) => o.id === item.id);
+      if (existing) {
+        return prev.map((o) =>
+          o.id === item.id ? { ...o, qty: o.qty + 1 } : o
+        );
       }
-      console.log(item);
+      return [...prev, { ...item, qty: 1 }];
     });
+  };
+
+  const removeFromOrder = (id) => {
+    setOrder((prev) => prev.filter((item) => item.id !== id));
+  };
+
+  const totalPrice = order.reduce(
+    (acc, item) => acc + item.price * item.qty,
+    0
+  );
+
+  const confirmOrders = (order) => {
+    if (order.length === 0) return;
+
+    const newOrder = {
+      id: Date.now(), // unique id
+      items: order, // keep the items array bundled
+      status: "Pending",
+      total: order.reduce((acc, item) => acc + item.price * item.qty, 0),
+    };
+
+    const updatedOrders = [...sessionOrders, newOrder];
+    setSessionOrders(updatedOrders);
+    setOrder([]);
+    localStorage.setItem("Session Orders", JSON.stringify(updatedOrders));
+    navigate("/client/orders");
   };
 
   return (
     <>
-      {/* <div className="border rounded-lg p-4 flex flex-col m-5 bg-gray-950">
+      <div className="border rounded-lg p-4 flex flex-col m-5 bg-gray-950">
         <h2 className="text-lg font-semibold mb-4">Current Order</h2>
         <div className="flex-1 overflow-y-auto space-y-2">
           {order.length === 0 && <p className="text-gray-500">No items yet</p>}
@@ -80,7 +97,7 @@ const NewOrder = () => {
                 <span>Ksh {item.price * item.qty}</span>
                 <button
                   className="bg-red-500 text-white px-2 py-1 rounded-md text-sm hover:bg-red-600"
-                  // onClick={() => removeFromOrder(item.id)}
+                  onClick={() => removeFromOrder(item.id)}
                 >
                   Remove
                 </button>
@@ -90,13 +107,18 @@ const NewOrder = () => {
         </div>
         <div className="mt-4 border-t pt-2 flex justify-between font-semibold">
           <span>Total</span>
-          {/* <span>Ksh {totalPrice}</span> 
+          <span>Ksh {totalPrice}</span>
         </div>
-        <button className="mt-4 w-full bg-emerald-500 text-white py-2 rounded-lg hover:bg-emerald-600">
+        <button
+          className="mt-4 w-full bg-emerald-500 text-white py-2 rounded-lg hover:bg-emerald-600"
+          onClick={() => {
+            confirmOrders(order);
+          }}
+        >
           Confirm Order
         </button>
-      </div> */}
-      // <hr />
+      </div>
+      <hr />
       <div className="grid grid-cols-3 gap-4 p-4 my-4">
         {/* Left - Menu & Filters */}
         <div className="col-span-3 space-y-4">

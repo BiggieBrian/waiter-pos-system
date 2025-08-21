@@ -3,6 +3,7 @@ import { Outlet } from "react-router";
 import { Link } from "react-router";
 import { ClientFooter } from "./ClientFooter";
 import { ClientHeader } from "./ClientHeader";
+import { useState } from "react";
 
 const Client = () => {
   return (
