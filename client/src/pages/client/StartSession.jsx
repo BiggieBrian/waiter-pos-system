@@ -1,15 +1,7 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faUser,
-  faCreditCard,
-  faHome,
-  faUtensils,
-  faPlus,
-} from "@fortawesome/free-solid-svg-icons";
+import { faUser } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
-import { useEffect } from "react";
 
 const StartSession = () => {
   const navigate = useNavigate();
@@ -17,73 +9,120 @@ const StartSession = () => {
     name: "",
     mobile: "",
   });
+
+  const [errors, setErrors] = useState({});
+
   useEffect(() => {
     const storedProfile = JSON.parse(localStorage.getItem("Profile Details"));
     if (storedProfile) {
       setProfileDetails(storedProfile);
       navigate("/client");
     }
-  }, []);
+  }, [navigate]);
+
+  const validate = (field, value) => {
+    let error = "";
+
+    if (field === "name") {
+      if (!value.trim()) {
+        error = "Name is required.";
+      } else if (value.trim().length < 2) {
+        error = "Name must be at least 2 characters.";
+      }
+    }
+
+    if (field === "mobile") {
+      if (!value.trim()) {
+        error = "Mobile number is required.";
+      } else if (!/^(?:07|01)\d{8}$/.test(value)) {
+        error = "Enter a valid Kenyan mobile (07xx or 01xx, 10 digits).";
+      }
+    }
+
+    setErrors((prev) => ({ ...prev, [field]: error }));
+  };
+
+  const handleChange = (field, value) => {
+    setProfileDetails((prev) => ({ ...prev, [field]: value }));
+    validate(field, value);
+  };
+
   const saveDetails = (e) => {
     e.preventDefault();
-    console.log(profileDetails);
+
+    // run validation for all fields before submitting
+    validate("name", profileDetails.name);
+    validate("mobile", profileDetails.mobile);
+
+    // if there are any errors, stop submission
+    if (Object.values(errors).some((err) => err)) {
+      return;
+    }
+
     localStorage.setItem("Profile Details", JSON.stringify(profileDetails));
-    setProfileDetails({
-      name: "",
-      mobile: "",
-    });
+    setProfileDetails({ name: "", mobile: "" });
     navigate("/client");
   };
+
   return (
-    <>
-      <main className="min-h-screen bg-[#0A0A0A] text-white flex justify-center items-center">
-        <div className="flex flex-col justify-center items-center gap-5">
-          <div className="flex flex-col items-center bg-emerald-500 p-5 rounded-full">
-            <FontAwesomeIcon icon={faUser} size="2xl" />
+    <main className="min-h-screen bg-[#0A0A0A] text-white flex justify-center items-center">
+      <div className="flex flex-col justify-center items-center gap-5 w-full max-w-md px-4">
+        {/* User Icon */}
+        <div className="flex flex-col items-center bg-emerald-500 p-5 rounded-full">
+          <FontAwesomeIcon icon={faUser} size="2xl" />
+        </div>
+
+        {/* Form */}
+        <form className="flex flex-col gap-5 w-full" onSubmit={saveDetails}>
+          {/* Name */}
+          <div className="flex flex-col gap-1">
+            <label htmlFor="name">Name</label>
+            <input
+              id="name"
+              type="text"
+              className={`border rounded-xl p-2 text-white ${
+                errors.name ? "border-red-500" : "border-gray-300"
+              }`}
+              placeholder="Enter your name"
+              value={profileDetails.name}
+              onChange={(e) => handleChange("name", e.target.value)}
+              required
+            />
+            {errors.name && (
+              <p className="text-red-500 text-sm">{errors.name}</p>
+            )}
           </div>
 
-          <form
-            action=""
-            className="flex flex-col gap-5"
-            onSubmit={saveDetails}
+          {/* Mobile */}
+          <div className="flex flex-col gap-1">
+            <label htmlFor="mobile">Mobile</label>
+            <input
+              id="mobile"
+              type="tel"
+              className={`border rounded-xl p-2 text-white${
+                errors.mobile ? "border-red-500" : "border-gray-300"
+              }`}
+              placeholder="07xx xxx xxx"
+              value={profileDetails.mobile}
+              onChange={(e) => handleChange("mobile", e.target.value)}
+              required
+              maxLength={10}
+            />
+            {errors.mobile && (
+              <p className="text-red-500 text-sm">{errors.mobile}</p>
+            )}
+          </div>
+
+          {/* Submit */}
+          <button
+            type="submit"
+            className="bg-emerald-500 py-3 rounded-xl font-semibold hover:bg-emerald-600 transition"
           >
-            <div className="flex flex-col gap-2">
-              <label htmlFor="">Name</label>
-              <input
-                type="text"
-                className="border-1 rounded-xl p-2"
-                value={profileDetails.name}
-                onChange={(e) => {
-                  setProfileDetails((prev) => ({
-                    ...prev, // keep existing fields
-                    name: e.target.value, // update only "name"
-                  }));
-                }}
-              />
-            </div>
-
-            <div className="flex flex-col gap-2">
-              <label htmlFor="">Mobile</label>
-              <input
-                type="phone"
-                className="border-1 rounded-xl p-2"
-                value={profileDetails.mobile}
-                onChange={(e) => {
-                  setProfileDetails((prev) => ({
-                    ...prev, // keep existing fields
-                    mobile: e.target.value, // update only "mobile"
-                  }));
-                }}
-              />
-            </div>
-
-            <button type="submit" className="bg-emerald-500 py-3 rounded-xl">
-              Start
-            </button>
-          </form>
-        </div>
-      </main>
-    </>
+            Start
+          </button>
+        </form>
+      </div>
+    </main>
   );
 };
 
