@@ -2,7 +2,7 @@ import React from "react";
 
 const SessionCard = ({ session }) => {
   return (
-    <div className="bg-white rounded-2xl shadow p-4 border border-gray-200">
+    <div className="bg-white rounded-2xl shadow p-4 border border-gray-200 text-black">
       <h2 className="font-bold text-lg text-emerald-600 mb-1">
         Table {session.tableId}
       </h2>
