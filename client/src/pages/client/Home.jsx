@@ -22,9 +22,16 @@ const Home = () => {
   const name = profile.name.charAt(0).toUpperCase() + profile.name.slice(1);
   return (
     <>
-      <div>
-        <h1 className="text-2xl">Welcome, {name}</h1>
-      </div>
+      <header className="w-11/12 mx-auto py-2">
+        <div className="flex flex-col md:flex-row justify-between py-3 gap-3">
+          <div>
+            <h1 className="text-2xl py-2">Whizperz Cafe and Pizza</h1>
+            <p className="text-2xl text-emerald-500">
+              Table <span>9</span>
+            </p>
+          </div>
+        </div>
+      </header>
       <br />
       <div className="p-4 space-y-4">
         <StatCard title="Total Orders Made" value={sessionOrders.length} />

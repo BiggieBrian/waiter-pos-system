@@ -16,9 +16,9 @@ const StartSession = () => {
     const storedProfile = JSON.parse(localStorage.getItem("Profile Details"));
     if (storedProfile) {
       setProfileDetails(storedProfile);
-      navigate("/client");
+      navigate("/client/home");
     }
-  }, [navigate]);
+  }, []);
 
   const validate = (field, value) => {
     let error = "";
@@ -61,11 +61,11 @@ const StartSession = () => {
 
     localStorage.setItem("Profile Details", JSON.stringify(profileDetails));
     setProfileDetails({ name: "", mobile: "" });
-    navigate("/client");
+    navigate("/client/home");
   };
 
   return (
-    <main className="min-h-screen bg-[#0A0A0A] text-white flex justify-center items-center">
+    <main className="min-h-screen bg-black text-white flex justify-center items-center">
       <div className="flex flex-col justify-center items-center gap-5 w-full max-w-md px-4">
         {/* User Icon */}
         <div className="flex flex-col items-center bg-emerald-500 p-5 rounded-full">

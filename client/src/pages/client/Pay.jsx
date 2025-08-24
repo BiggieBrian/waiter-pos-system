@@ -74,7 +74,7 @@ const Pay = () => {
           <button
             key={m.id}
             onClick={() => setSelectedMethod(m.id)}
-            className={`my-4 mx-auto flex w-80 max-w-sm flex-col items-center justify-center rounded-3xl border ${m.color} p-5 text-white`}
+            className={`my-4 mx-auto flex w-8/12 flex-col items-center justify-center rounded-3xl border ${m.color} p-5 text-white`}
           >
             <div className="flex h-20 w-20 items-center justify-center rounded-full bg-black text-white">
               <FontAwesomeIcon icon={m.icon} size="2x" />

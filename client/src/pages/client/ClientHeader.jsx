@@ -1,16 +1,24 @@
 import React from "react";
-import { NewOrderButton } from "../../components/newOrderButton";
-import { Link } from "react-router";
+
+import { useEffect } from "react";
+import { useState } from "react";
 const ClientHeader = () => {
+  const [profile, setProfile] = useState({ name: "", mobile: "" });
+  useEffect(() => {
+    const storedProfile = JSON.parse(localStorage.getItem("Profile Details"));
+    if (storedProfile) {
+      setProfile(storedProfile);
+    }
+  }, []);
+  const name = profile.name.charAt(0).toUpperCase() + profile.name.slice(1);
   return (
     <>
-      <header className="w-11/12 mx-auto py-2">
-        <div className="flex flex-col md:flex-row justify-between py-3 gap-3">
-          <div>
-            <h1 className="text-2xl py-2">Whizperz Cafe and Pizza</h1>
-            <p className="text-2xl text-emerald-500">
-              Table <span>9</span>
-            </p>
+      <header className="bg-emerald-600 text-white p-4 flex justify-between items-center shadow-md">
+        <h1 className="font-bold text-lg">eWaiter</h1>
+        <div className="flex items-center gap-2">
+          <span className="text-sm">Hi, {name}</span>
+          <div className="w-8 h-8 rounded-full bg-white text-emerald-600 flex items-center justify-center font-bold">
+            {name.charAt(0)}
           </div>
         </div>
       </header>

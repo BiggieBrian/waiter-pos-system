@@ -3,20 +3,20 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faUser,
   faCreditCard,
-  faHome,
-  faUtensils,
   faPlus,
+  faChair,
+  faBell,
 } from "@fortawesome/free-solid-svg-icons";
 import { Link, useLocation } from "react-router-dom";
 
-const ClientFooter = () => {
+const WaiterFooter = () => {
   const location = useLocation();
 
   const tabs = [
-    { label: "Home", icon: faHome, path: "/client/home" },
-    { label: "Orders", icon: faUtensils, path: "/client/orders" },
-    { label: "Pay", icon: faCreditCard, path: "/client/pay" },
-    { label: "eWaiter?", icon: faUser, path: "/client/about-app" },
+    { label: "Orders", icon: faBell, path: "/waiter/orders" },
+    { label: "Sessions", icon: faChair, path: "/waiter/sessions" },
+    { label: "Payments", icon: faCreditCard, path: "/waiter/payments" },
+    { label: "Profile", icon: faUser, path: "/waiter/profile" },
   ];
 
   return (
@@ -38,7 +38,7 @@ const ClientFooter = () => {
         ))}
 
         {/* Floating New Order */}
-        <Link to="/client/new-order">
+        <Link to="/waiter/new-order">
           <button className="flex flex-col items-center bg-emerald-500 p-5 rounded-full text-white shadow-lg">
             <FontAwesomeIcon icon={faPlus} size="lg" />
           </button>
@@ -63,4 +63,4 @@ const ClientFooter = () => {
   );
 };
 
-export { ClientFooter };
+export { WaiterFooter };

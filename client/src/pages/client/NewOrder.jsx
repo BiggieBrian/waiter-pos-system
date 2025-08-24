@@ -150,7 +150,7 @@ const NewOrder = ({}) => {
           {/* Search & Filter */}
 
           {/* Menu Items */}
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-7">
             {filteredItems.map((item) => (
               <MenuItemCard key={item.id} item={item} onAdd={addToOrder} />
             ))}
