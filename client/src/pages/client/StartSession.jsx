@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const StartSession = () => {
   const navigate = useNavigate();
@@ -65,7 +66,7 @@ const StartSession = () => {
   };
 
   return (
-    <main className="min-h-screen bg-black text-white flex justify-center items-center">
+    <main className="min-h-screen  flex justify-center items-center">
       <div className="flex flex-col justify-center items-center gap-5 w-full max-w-md px-4">
         {/* User Icon */}
         <div className="flex flex-col items-center bg-emerald-500 p-5 rounded-full">
@@ -80,8 +81,8 @@ const StartSession = () => {
             <input
               id="name"
               type="text"
-              className={`border rounded-xl p-2 text-white ${
-                errors.name ? "border-red-500" : "border-gray-300"
+              className={`border rounded-xl p-2  ${
+                errors.name ? "border-red-500" : "border-black"
               }`}
               placeholder="Enter your name"
               value={profileDetails.name}
@@ -100,7 +101,7 @@ const StartSession = () => {
               id="mobile"
               type="tel"
               className={`border rounded-xl p-2 text-white${
-                errors.mobile ? "border-red-500" : "border-gray-300"
+                errors.mobile ? "border-red-500" : "border-black"
               }`}
               placeholder="07xx xxx xxx"
               value={profileDetails.mobile}

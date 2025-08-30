@@ -20,8 +20,8 @@ const ClientFooter = () => {
   ];
 
   return (
-    <footer className="fixed bottom-0 left-0 right-0 bg-[#0A0A0A] z-50">
-      <nav className="shadow-lg border-t border-gray-700 flex justify-around items-center py-5">
+    <footer className="fixed bottom-0 left-0 right-0 bg-[#0A0A0A] z-50 rounded-t-xl">
+      <nav className="shadow-lg  border-gray-700 flex justify-around items-center py-5">
         {tabs.slice(0, 2).map((tab) => (
           <Link key={tab.path} to={tab.path}>
             <button

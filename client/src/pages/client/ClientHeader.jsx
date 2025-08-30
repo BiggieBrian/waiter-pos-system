@@ -13,7 +13,7 @@ const ClientHeader = () => {
   const name = profile.name.charAt(0).toUpperCase() + profile.name.slice(1);
   return (
     <>
-      <header className="bg-emerald-600 text-white p-4 flex justify-between items-center shadow-md">
+      <header className="bg-emerald-600 text-white p-8 flex justify-between items-center shadow-md rounded-b-xl">
         <h1 className="font-bold text-lg">eWaiter</h1>
         <div className="flex items-center gap-2">
           <span className="text-sm">Hi, {name}</span>

@@ -8,7 +8,7 @@ import { useState } from "react";
 const ClientBody = () => {
   return (
     <>
-      <main className="min-h-screen bg-[#000000] text-white">
+      <main className="min-h-screen">
         <ClientHeader />
         <div className="w-11/12 mx-auto pt-10 pb-50">
           <Outlet />
