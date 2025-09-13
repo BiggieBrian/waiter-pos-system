@@ -13,10 +13,16 @@ export const createTable = async (req, res) => {
         .json({ message: `Table ${number} already exists` });
     }
 
-    const qrData = `https://localhost:5000/table/${number}`;
+    // create table first
+    const table = new Table({ number, status: "Available" });
+    await table.save();
+
+    // generate QR using frontend route
+    const qrData = `http://localhost:5173/start/${table._id}`;
     const qrCode = await QRCode.toDataURL(qrData);
 
-    const table = new Table({ number, qrCode });
+    table.qrCode = qrCode;
+    table.qrData = qrData;
     const savedTable = await table.save();
 
     res.status(201).json(savedTable);
@@ -40,10 +46,14 @@ export const createMultipleTables = async (req, res) => {
       const existing = await Table.findOne({ number });
       if (existing) continue;
 
-      const qrData = `https://localhost:5000/table/${number}`;
+      const table = new Table({ number, status: "Available" });
+      await table.save();
+
+      const qrData = `http://localhost:5173/start/${table._id}`;
       const qrCode = await QRCode.toDataURL(qrData);
 
-      const table = new Table({ number, qrCode });
+      table.qrCode = qrCode;
+      table.qrData = qrData;
       await table.save();
       createdTables.push(table);
     }

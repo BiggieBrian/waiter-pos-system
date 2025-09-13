@@ -1,0 +1,35 @@
+import mongoose from "mongoose";
+import QRCode from "qrcode";
+import { Table } from "./models/Table.js"; // adjust path to your model
+
+const MONGO_URI = "mongodb://localhost:27017/yourdbname"; // update db name
+
+async function updateTables() {
+  try {
+    await mongoose.connect(MONGO_URI);
+
+    const tables = await Table.find();
+
+    for (const table of tables) {
+      // regenerate QR with the new format
+      const qrData = `http://localhost:5173/start/${table._id}`;
+      const qrCode = await QRCode.toDataURL(qrData);
+
+      table.qrCode = qrCode;
+
+      // ensure status is set if missing
+      if (!table.status) table.status = "Available";
+
+      await table.save();
+      console.log(`✅ Updated Table ${table.number}`);
+    }
+
+    console.log("🎉 All tables updated successfully!");
+    mongoose.disconnect();
+  } catch (error) {
+    console.error("❌ Error updating tables:", error);
+    mongoose.disconnect();
+  }
+}
+
+updateTables();

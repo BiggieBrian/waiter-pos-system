@@ -7,6 +7,10 @@ const tableSchema = new mongoose.Schema(
       required: true,
       unique: true, // each table number must be unique
     },
+    qrData: {
+      type: String, // the URL encoded inside the QR
+      required: true,
+    },
     qrCode: {
       type: String, // stores QR code image as base64 or a URL path
       required: true,
