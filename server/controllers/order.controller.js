@@ -13,17 +13,25 @@ export const createOrder = async (req, res) => {
       return res.status(400).json({ message: "Invalid or inactive session" });
     }
 
+    // extract all menuItem IDs from request
+    const itemIds = items.map((i) => i.menuItem);
+
+    // fetch all menu items at once
+    const menuItems = await MenuItem.find({ _id: { $in: itemIds } });
+
+    // check for missing menu items
+    if (menuItems.length !== itemIds.length) {
+      return res
+        .status(404)
+        .json({ message: "One or more menu items not found" });
+    }
+
     // calculate total
     let total = 0;
-    for (let i of items) {
-      const menuItem = await MenuItem.findById(i.menuItem);
-      if (!menuItem) {
-        return res
-          .status(404)
-          .json({ message: `Menu item not found: ${i.menuItem}` });
-      }
+    items.forEach((i) => {
+      const menuItem = menuItems.find((m) => m._id.toString() === i.menuItem);
       total += menuItem.price * i.qty;
-    }
+    });
 
     const newOrder = new Order({
       session: sessionId,

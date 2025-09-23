@@ -19,6 +19,7 @@ import CashierDashboard from "../pages/cashier/CashierDashboard";
 import PaymentsPage from "../pages/cashier/PaymentsPage";
 import ReportsPage from "../pages/cashier/ReportsPage";
 import OrdersQueue from "../pages/kitchen/OrdersQueue";
+import CompletedSession from "../pages/customer/CompletedSession";
 
 export default function AppRouter() {
   return (
@@ -26,12 +27,14 @@ export default function AppRouter() {
       <Routes>
         <Route path="start/:tableId" element={<StartPage />} />
         {/* Customer (QR menu) */}
-        <Route path="/session/:id" element={<CustomerLayout />}>
+        <Route path="/session/:sessionId" element={<CustomerLayout />}>
           <Route index element={<MenuPage />} />
           <Route path="orders" element={<OrdersPage />} />
           <Route path="payment" element={<PaymentPage />} />
           <Route path="profile" element={<ProfilePage />} />
         </Route>
+
+        <Route path="/:id/closed" element={<CompletedSession />} />
 
         {/* Waiter */}
         <Route path="/waiter" element={<WaiterLayout />}>

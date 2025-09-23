@@ -40,13 +40,20 @@ const StartPage = () => {
       return;
     }
 
+    localStorage.setItem("userPhone", JSON.stringify(phone));
+    localStorage.setItem("userName", JSON.stringify(name));
     try {
       const res = await axios.post(
-        `http://localhost:5000/api/sessions/${tableId}`
+        `http://localhost:5000/api/sessions/${tableId}`,
+        {
+          customerName: name,
+          customerPhone: phone,
+        }
       );
 
       toast.success("Session started! Redirecting to menu...");
-      const sessionId = res.data._id;
+
+      const sessionId = res.data.session._id; // ✅ correct path
 
       // ⏩ Navigate to Menu page with sessionId
       navigate(`/session/${sessionId}`);

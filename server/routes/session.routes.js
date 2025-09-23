@@ -17,6 +17,6 @@ router.put("/:id/close", closeSession);
 // Get active sessions
 router.get("/active", getActiveSessions);
 
-router.get("/:id", getSessionById);
+router.get("/:sessionId", getSessionById);
 
 export default router;

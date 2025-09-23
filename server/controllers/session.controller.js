@@ -6,6 +6,7 @@ import { User } from "../models/User.js";
 export const createSession = async (req, res) => {
   try {
     const { tableId } = req.params;
+    const { customerName, customerPhone } = req.body;
 
     // ensure table exists
     const table = await Table.findById(tableId);
@@ -22,14 +23,17 @@ export const createSession = async (req, res) => {
       return res.status(400).json({ message: "No waiters available" });
     }
 
-    // pick a random waiter
+    // pick a random waiter (later you can optimize: least busy waiter)
     const randomWaiter = waiters[Math.floor(Math.random() * waiters.length)];
 
+    // create session
     const newSession = new Session({
       table: tableId,
       waiter: randomWaiter._id,
+      customerName,
+      customerPhone,
       status: "Active",
-      startedAt: new Date(),
+      startTime: new Date(),
     });
 
     const saved = await newSession.save();
@@ -41,12 +45,13 @@ export const createSession = async (req, res) => {
     res.status(201).json({
       message: "Session started successfully",
       session: saved,
-      table: table,
+      table,
     });
   } catch (error) {
-    res
-      .status(400)
-      .json({ message: "Error creating session", error: error.message });
+    res.status(400).json({
+      message: "Error creating session",
+      error: error.message,
+    });
   }
 };
 
@@ -101,8 +106,8 @@ export const getActiveSessions = async (req, res) => {
 // Get a single session
 export const getSessionById = async (req, res) => {
   try {
-    const { id } = req.params;
-    const session = await Session.findById(id).populate("table waiter");
+    const { sessionId } = req.params;
+    const session = await Session.findById(sessionId).populate("table waiter");
 
     if (!session) {
       return res.status(404).json({ message: "Session not found" });

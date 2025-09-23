@@ -12,6 +12,17 @@ const sessionSchema = new mongoose.Schema(
       ref: "User", // role: Waiter
       required: true,
     },
+    customerName: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    customerPhone: {
+      type: String,
+      required: true,
+      trim: true,
+      match: [/^\+?[0-9]{7,15}$/, "Please provide a valid phone number"],
+    },
     status: {
       type: String,
       enum: ["Active", "Closed"],

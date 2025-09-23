@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   ArrowLeft,
   User,
@@ -7,6 +7,8 @@ import {
   CreditCard,
 } from "lucide-react";
 import { Link } from "react-router";
+import { useParams, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export default function PaymentPage() {
   const [selectedMethod, setSelectedMethod] = useState("cash");
@@ -14,19 +16,40 @@ export default function PaymentPage() {
   const [cardName, setCardName] = useState("");
   const [expiryDate, setExpiryDate] = useState("");
   const [cvv, setCvv] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("0723916573");
+  const [phoneNumber, setPhoneNumber] = useState("07xxxxxxxx");
+  const [totalAmount, setTotalAmount] = useState(0);
+  const { sessionId } = useParams();
+  const navigate = useNavigate();
 
-  const total = 123456.78;
+  useEffect(() => {
+    const storedTotalAmount = localStorage.getItem("Session Total");
+    //const storedPhone = localStorage.getItem("userPhone");
+
+    if (storedTotalAmount) {
+      setTotalAmount(JSON.parse(storedTotalAmount));
+    }
+    /*if (storedPhone) {
+      setPhoneNumber(JSON.parse(storedPhone));
+    }*/
+  }, []);
+
+  const closeSession = async () => {
+    const response = await axios.put(
+      `http://localhost:5000/api/sessions/${sessionId}/close`
+    );
+
+    navigate(`/${sessionId}/closed`);
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
       {/* Header */}
-      <div className="bg-white p-4 flex items-center justify-between border-b">
-        <Link to={"/session"}>
+      <div className="p-4 flex items-center justify-between">
+        <Link to={`/session/${sessionId}`}>
           <ArrowLeft className="w-6 h-6" />
         </Link>
         <h1 className="text-xl font-bold">Checkout</h1>
-        <Link to={"/session/profile"}>
+        <Link to={`/session/${sessionId}/profile`}>
           <User className="w-8 h-8" />
         </Link>
       </div>
@@ -160,9 +183,14 @@ export default function PaymentPage() {
         <div className="bg-white rounded-xl p-4 flex items-center justify-between">
           <div>
             <span className="text-lg font-bold">Total:</span>
-            <div className="text-2xl font-bold">${total.toLocaleString()}</div>
+            <div className="text-2xl font-bold">
+              Ksh {totalAmount.toLocaleString()}
+            </div>
           </div>
-          <button className="bg-red-500 hover:bg-red-600 text-white px-8 py-3 rounded-xl text-lg font-bold">
+          <button
+            className="bg-red-500 hover:bg-red-600 text-white px-8 py-3 rounded-xl text-lg font-bold"
+            onClick={() => closeSession()}
+          >
             Pay
           </button>
         </div>
