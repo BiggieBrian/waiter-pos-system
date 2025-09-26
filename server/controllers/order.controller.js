@@ -3,6 +3,14 @@ import { Session } from "../models/Session.js";
 import { MenuItem } from "../models/MenuItem.js";
 
 // Create an order for a session
+export const getAllOrders = async (req, res) => {
+  try {
+    const orders = await Order.find();
+    res.status(200).json(orders);
+  } catch (error) {
+    res.status(500).json({ message: "Error in getting orders" });
+  }
+};
 export const createOrder = async (req, res) => {
   try {
     const { sessionId, items } = req.body;

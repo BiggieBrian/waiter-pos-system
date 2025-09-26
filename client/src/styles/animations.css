@@ -1,0 +1,12 @@
+@keyframes slow-pan {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 24px 24px;
+  }
+}
+
+.animate-slow-pan {
+  animation: slow-pan 20s linear infinite; /* slower than before */
+}

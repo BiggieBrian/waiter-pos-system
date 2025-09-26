@@ -5,7 +5,27 @@ function App() {
   return (
     <>
       <AppRouter />
-      <Toaster position="top-center" reverseOrder={false} />
+      <Toaster
+        position="top-center"
+        toastOptions={{
+          style: {
+            background: "#1f1f1f", // dark background
+            color: "#fff", // white text
+          },
+          success: {
+            iconTheme: {
+              primary: "#f43f5e", // rose red
+              secondary: "#1f1f1f",
+            },
+          },
+          error: {
+            iconTheme: {
+              primary: "#f43f5e",
+              secondary: "#1f1f1f",
+            },
+          },
+        }}
+      />
     </>
   );
 }

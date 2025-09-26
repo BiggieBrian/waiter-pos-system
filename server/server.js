@@ -1,6 +1,6 @@
 import express from "express";
 import { connectDB } from "./config/db.js";
-import config from "./config/config.js";
+import { config } from "./config/config.js";
 import cors from "cors";
 import dotenv from "dotenv";
 import tableRoutes from "./routes/tables.routes.js";
@@ -8,6 +8,7 @@ import menuRoutes from "./routes/menu.routes.js";
 import userRoutes from "./routes/users.routes.js";
 import sessionRoutes from "./routes/session.routes.js";
 import orderRoutes from "./routes/order.routes.js";
+import authRoutes from "./routes/auth.routes.js";
 
 dotenv.config();
 const app = express();
@@ -21,6 +22,7 @@ app.use("/api/tables", tableRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/sessions", sessionRoutes);
 app.use("/api/orders", orderRoutes);
+app.use("/api/auth", authRoutes);
 
 const PORT = config.port;
 
