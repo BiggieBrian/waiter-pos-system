@@ -7,7 +7,7 @@ const AdminLayout = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <main className="flex min-h-screen bg-gradient-to-br from-rose-950 via-gray-950 to-black text-gray-100">
+    <main className="flex min-h-screen bg-black text-gray-100">
       <SideBar isOpen={isOpen} setIsOpen={setIsOpen} />
       <div className="flex-1 flex flex-col">
         <Navbar setIsOpen={setIsOpen} />

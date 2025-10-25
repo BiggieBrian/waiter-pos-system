@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { Search, User, ChevronDown, Plus, ShoppingCart } from "lucide-react";
+import { Search, User, ChevronDown, Plus, ShoppingCart, Flame } from "lucide-react";
 import { Tooltip } from "../../components/tooltip";
 import axios from "axios";
 import toast from "react-hot-toast";
 import bag from "../../assets/bag.png";
+import placeholder from "../../assets/menuPlaceholder.jpg"
 
 //
 // 🔹 Menu Page
@@ -25,7 +26,7 @@ const MenuPage = () => {
   const [orderItems, setOrderItems] = useState([]);
   const [orderExpanded, setOrderExpanded] = useState(false);
 
-  const redbg = "bg-[#de2a25]";
+  const redbg = "bg-black";
 
   const categories = [
     "All",
@@ -123,20 +124,18 @@ const MenuPage = () => {
   const totalQty = orderItems.reduce((acc, i) => acc + i.qty, 0);
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-20">
+    <div className="min-h-screen bg-gray-50 pb-20 overflow-x-hidden">
       {/* Header */}
-      <div className={`${redbg} text-white p-6 rounded-b-3xl`}>
+      <div className={`${redbg} text-white p-6  shadow-2xl`}>
         <div className="flex items-center justify-between mb-4">
-          <div>
-            <h1 className="text-2xl font-bold">Whizperz Cafe</h1>
-            <h2 className="text-2xl font-bold">& Pizza</h2>
+          <div className="flex items-center gap-1 text-rose-600">
+            <Flame className="size-10 "/>
+            <h1 className="text-4xl font-bold Lobster">Platter</h1>
           </div>
-          <Link to={`/session/${sessionId}/profile`}>
-            <User className="w-8 h-8" />
-          </Link>
+          <h3 className="text-2xl font-bold">Table {tableNumber}</h3>
         </div>
         <div className="flex items-center justify-between">
-          <h3 className="text-xl font-bold">Table {tableNumber}</h3>
+          <h3 className="text-2xl font-bold">Whizperz Cafe & Pizza</h3>
         </div>
       </div>
 
@@ -198,9 +197,10 @@ const MenuPage = () => {
               >
                 <div className="w-20 h-20 bg-gray-100 rounded-xl flex items-center justify-center text-3xl">
                   <img
-                    src={item.imageUrl}
+                    src={item.imageUrl || bag}
                     alt=""
                     className="size-20 rounded-xl"
+                    onError={(e) => (e.currentTarget.src = bag)}
                   />
                 </div>
                 <div className="flex-1">
@@ -225,7 +225,7 @@ const MenuPage = () => {
                       <button
                         onClick={() => handleAddItem(item)}
                         disabled={!orderStarted}
-                        className={`bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-xl ${
+                        className={`bg-red-500 hover:bg-rose-950 text-white px-6 py-2 rounded-xl ${
                           !orderStarted
                             ? "opacity-50 cursor-not-allowed"
                             : "hover:bg-red-600"

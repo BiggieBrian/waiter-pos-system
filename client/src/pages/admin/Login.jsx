@@ -7,6 +7,7 @@ import { UserCog } from "lucide-react"; // admin icon
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -24,6 +25,9 @@ const Login = () => {
         toast.success("Successful Log In");
         setUsername("");
         setPassword("");
+        setIsAdmin(true); // updates state
+        localStorage.setItem("isAdmin", "true"); // save persistent login
+        navigate("/admin");
       }
     } catch (error) {
       if (error.response?.status === 401) {

@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { mockMenu } from "../../data/mockData.js";
 import menuPlaceholder from "../../assets/menuPlaceholder.jpg";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 export default function MenuPage() {
-  const [menu, setMenu] = useState(mockMenu);
+  const [menu, setMenu] = useState([]);
   const [search, setSearch] = useState("");
   const [newItem, setNewItem] = useState({
     name: "",
@@ -17,18 +19,43 @@ export default function MenuPage() {
   const [editingItem, setEditingItem] = useState(null);
   const [showAddModal, setShowAddModal] = useState(false);
 
+  useEffect(() => {
+    const getMenu = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/api/menu");
+        setMenu(response.data || []);
+      } catch (error) {
+        console.error("Failed to fetch menu:", error);
+      }
+    };
+    getMenu();
+  }, []);
+
   // Filtered list
   const filteredMenu = menu.filter((item) =>
-    item.name.toLowerCase().includes(search.toLowerCase())
+    item.name.toLowerCase().includes(search.toLowerCase()),
   );
 
   // Add new item
   const handleAddItem = () => {
-    if (!newItem.name || !newItem.price) return;
-    setMenu([
-      ...menu,
-      { ...newItem, id: Date.now().toString(), price: Number(newItem.price) },
-    ]);
+    if (!newItem.name || !newItem.price || !newItem.category) return;
+
+    const create = async () => {
+      try {
+        const response = await axios.post("http://localhost:5000/api/menu", {
+          name: newItem.name,
+          category: newItem.category,
+          description: newItem.description,
+          price: newItem.price,
+          inStock: newItem.inStock,
+          imageUrl: newItem.imageUrl,
+          stockQty: newItem.stockQty,
+        });
+      } catch (error) {
+        console.error("Failed to create item:", error);
+      }
+    };
+    create();
     setNewItem({
       name: "",
       category: "Main",
@@ -39,12 +66,19 @@ export default function MenuPage() {
       stockQty: 0,
     });
     setShowAddModal(false);
+    
+    toast.success(
+      `${newItem.name} added to menu successfully. Refresh the page to see your changes`,
+      {
+        duration: 10000,
+      },
+    );
   };
 
   // Save edited item
   const handleSaveEdit = () => {
     setMenu(
-      menu.map((item) => (item.id === editingItem.id ? editingItem : item))
+      menu.map((item) => (item.id === editingItem.id ? editingItem : item)),
     );
     setEditingItem(null);
   };
@@ -77,34 +111,42 @@ export default function MenuPage() {
 
       {/* 🍽 Menu Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-5">
-        {filteredMenu.map((item) => (
+        {filteredMenu.map((item, index) => (
           <div
-            key={item.id}
-            className="bg-gray-900 border border-gray-700 rounded-lg shadow hover:shadow-lg transition overflow-hidden"
+            key={index}
+            className="bg-gray-900 border border-gray-700 rounded-lg shadow hover:shadow-lg transition overflow-hidden flex flex-col"
           >
+            {/* Image */}
             <img
               src={item.imageUrl || menuPlaceholder}
               alt={item.name}
               className="w-full h-32 sm:h-40 object-cover"
               onError={(e) => (e.currentTarget.src = menuPlaceholder)}
             />
-            <div className="p-3 space-y-2">
-              <h3 className="text-base sm:text-lg font-semibold text-white truncate">
-                {item.name}
-              </h3>
-              <p className="text-xs text-gray-400">{item.category}</p>
-              <p className="text-sm text-gray-300 line-clamp-2">
-                {item.description}
-              </p>
-              <p className="text-brand font-bold">KES {item.price}</p>
-              <p className="text-xs">
-                {item.inStock ? (
-                  <span className="text-green-500">In Stock</span>
-                ) : (
-                  <span className="text-rose-500">Out of Stock</span>
-                )}
-              </p>
-              <div className="flex space-x-2">
+
+            {/* Content */}
+            <div className="p-3 flex flex-col flex-1">
+              {/* Top Section */}
+              <div className="space-y-2 pb-3">
+                <h3 className="text-base sm:text-lg font-semibold text-white truncate">
+                  {item.name}
+                </h3>
+                <p className="text-xs text-gray-400">{item.category}</p>
+                <p className="text-sm text-gray-300 line-clamp-2">
+                  {item.description}
+                </p>
+                <p className="text-brand font-bold">KES {item.price}</p>
+                <p className="text-xs">
+                  {item.inStock ? (
+                    <span className="text-green-500">In Stock</span>
+                  ) : (
+                    <span className="text-rose-500">Out of Stock</span>
+                  )}
+                </p>
+              </div>
+
+              {/* Bottom Section (sticks to bottom) */}
+              <div className="flex space-x-2 justify-end mt-auto">
                 <button
                   onClick={() => setEditingItem(item)}
                   className="flex-1 px-4 py-2 text-xs sm:text-sm bg-indigo-600 rounded-lg hover:bg-indigo-700"

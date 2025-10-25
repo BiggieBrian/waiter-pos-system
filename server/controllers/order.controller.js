@@ -2,15 +2,27 @@ import { Order } from "../models/Order.js";
 import { Session } from "../models/Session.js";
 import { MenuItem } from "../models/MenuItem.js";
 
-// Create an order for a session
+
 export const getAllOrders = async (req, res) => {
   try {
-    const orders = await Order.find();
+    const orders = await Order.find()
+      .populate({
+        path: "session",
+        populate: { path: "table", select: "number" } 
+      })
+      .populate("items.menuItem"); 
+
     res.status(200).json(orders);
   } catch (error) {
-    res.status(500).json({ message: "Error in getting orders" });
+    console.error("Error fetching orders:", error);
+    res.status(500).json({
+      message: "Error in getting orders",
+      error: error.message,
+    });
   }
 };
+
+
 export const createOrder = async (req, res) => {
   try {
     const { sessionId, items } = req.body;
@@ -90,3 +102,29 @@ export const updateOrderStatus = async (req, res) => {
       .json({ message: "Error updating order", error: error.message });
   }
 };
+
+export const getDailyOrders = async (req, res) => {
+  try {
+    const today = new Date();
+    const startOfDay = new Date(today.setHours(0, 0, 0, 0));
+    const endOfDay = new Date(today.setHours(23, 59, 59, 999));
+
+    const orders = await Order.find({
+      createdAt: { $gte: startOfDay, $lte: endOfDay },
+    })
+      .populate({
+        path: "session",
+        populate: { path: "table", select: "number" },
+      })
+      .populate("items.menuItem");
+
+    res.status(200).json(orders);
+  } catch (error) {
+    console.error("Error fetching orders:", error);
+    res.status(500).json({
+      message: "Error in getting orders",
+      error: error.message,
+    });
+  }
+};
+

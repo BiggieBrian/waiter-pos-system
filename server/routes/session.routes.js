@@ -4,6 +4,7 @@ import {
   closeSession,
   getActiveSessions,
   getSessionById,
+  getDailyActiveSessions
 } from "../controllers/session.controller.js";
 
 const router = express.Router();
@@ -18,5 +19,7 @@ router.put("/:id/close", closeSession);
 router.get("/active", getActiveSessions);
 
 router.get("/:sessionId", getSessionById);
+
+router.get("/today", getDailyActiveSessions)
 
 export default router;

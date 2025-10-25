@@ -9,6 +9,8 @@ import {
   FileBarChart,
   ChevronDown,
   UserCheck,
+  UserCog,
+  Flame
 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
@@ -95,9 +97,10 @@ export default function SideBar({ isOpen, setIsOpen }) {
           w-64 bg-transparent backdrop-blur flex flex-col border-r border-gray-800`}
       >
         {/* Header */}
-        <div className="px-6 py-4 text-2xl font-bold">
-          e<span className="text-rose-500">Waiter</span>
-        </div>
+        <div className=" px-6 py-4 flex items-center gap-1 text-rose-600">
+            <Flame className="size-10 "/>
+            <h1 className="text-4xl font-bold Lobster">Platter</h1>
+          </div>
 
         {/* Menu */}
         <nav className="flex-1 overflow-y-auto space-y-2">
@@ -133,13 +136,6 @@ export default function SideBar({ isOpen, setIsOpen }) {
 
             {openGroup === "management" && (
               <div className="flex flex-col">
-                <ChildLink
-                  to="/admin/customers"
-                  Icon={UserCheck}
-                  label="Customers"
-                  tooltip="Manage customer profiles and history"
-                  activeCheck={isActive("/admin/customers")}
-                />
                 <ChildLink
                   to="/admin/menu"
                   Icon={Utensils}
@@ -194,6 +190,13 @@ export default function SideBar({ isOpen, setIsOpen }) {
                   tooltip="Track and review customer orders"
                   activeCheck={isActive("/admin/orders")}
                 />
+                 <ChildLink
+                  to="/admin/customers"
+                  Icon={UserCheck}
+                  label="Customers"
+                  tooltip="Manage customer profiles and history"
+                  activeCheck={isActive("/admin/customers")}
+                />
                 <ChildLink
                   to="/admin/payments"
                   Icon={Wallet}
@@ -206,21 +209,38 @@ export default function SideBar({ isOpen, setIsOpen }) {
           </div>
 
           {/* Settings */}
-          <Tooltip message="Configure system preferences and options">
-            <Link
-              to="/admin/settings"
-              className={`flex items-center gap-3 px-6 py-3 rounded transition-colors ${
-                isActive("/admin/settings")
-                  ? "bg-rose-900/40 text-rose-400 font-semibold"
-                  : "hover:bg-rose-900/30"
-              }`}
-            >
-              <div className="w-6 flex-shrink-0 flex items-center justify-center">
-                <Settings size={16} />
-              </div>
-              <span className="ml-2">Settings</span>
-            </Link>
-          </Tooltip>
+          <div className="flex flex-col">
+            <Tooltip message="Configure system preferences and options">
+              <Link
+                to="/admin/settings"
+                className={`flex items-center gap-3 px-6 py-3 rounded transition-colors ${
+                  isActive("/admin/settings")
+                    ? "bg-rose-900/40 text-rose-400 font-semibold"
+                    : "hover:bg-rose-900/30"
+                }`}
+              >
+                <div className="w-6 flex-shrink-0 flex items-center justify-center">
+                  <Settings size={16} />
+                </div>
+                <span className="ml-2">Settings</span>
+              </Link>
+            </Tooltip>
+            <Tooltip message="Configure system preferences and options">
+              <Link
+                to="/admin/profile"
+                className={`flex items-center gap-3 px-6 py-3 rounded transition-colors ${
+                  isActive("/admin/profile")
+                    ? "bg-rose-900/40 text-rose-400 font-semibold"
+                    : "hover:bg-rose-900/30"
+                }`}
+              >
+                <div className="w-6 flex-shrink-0 flex items-center justify-center">
+                  <UserCog size={16} />
+                </div>
+                <span className="ml-2">Profile</span>
+              </Link>
+            </Tooltip>
+          </div>
         </nav>
       </div>
     </>

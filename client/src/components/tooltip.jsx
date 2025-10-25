@@ -12,7 +12,7 @@ const Tooltip = ({ children, message }) => {
     >
       {children}
       {visible && message && (
-        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded shadow-lg whitespace-nowrap z-10">
+        <div className="absolute bottom-full -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded shadow-lg whitespace-nowrap z-10">
           {message}
         </div>
       )}

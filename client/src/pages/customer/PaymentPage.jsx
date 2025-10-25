@@ -59,7 +59,7 @@ export default function PaymentPage() {
         <div
           onClick={() => setSelectedMethod("cash")}
           className={`cursor-pointer bg-white rounded-xl p-4 border-2 ${
-            selectedMethod === "cash" ? "border-red-500" : "border-gray-200"
+            selectedMethod === "cash" ? "border-rose-950" : "border-gray-200"
           }`}
         >
           <div className="flex items-center justify-between">

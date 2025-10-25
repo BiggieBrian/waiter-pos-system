@@ -32,8 +32,10 @@ import AdminStaff from "../pages/admin/StaffPage";
 import AdminPayments from "../pages/admin/PaymentsPage";
 import AdminSettings from "../pages/admin/SettingsPage";
 import AdminSessions from "../pages/admin/SessionsPage";
-
+import AdminProfile from "../pages/admin/AdminProfile";
+//AdminAuth
 import AdminLogin from "../pages/admin/Login";
+import RequireAuth from "../pages/admin/RequireAuth";
 
 export default function AppRouter() {
   return (
@@ -52,7 +54,14 @@ export default function AppRouter() {
 
         {/* Admin Routes */}
         <Route path="login" element={<AdminLogin />}></Route>
-        <Route path="/admin" element={<AdminLayout />}>
+        <Route
+          path="/admin"
+          element={
+            <RequireAuth>
+              <AdminLayout />
+            </RequireAuth>
+          }
+        >
           <Route index element={<Dashboard />} />
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="orders" element={<AdminOrders />} />
@@ -63,6 +72,7 @@ export default function AppRouter() {
           <Route path="payments" element={<AdminPayments />} />
           <Route path="settings" element={<AdminSettings />} />
           <Route path="sessions" element={<AdminSessions />} />
+          <Route path="profile" element={<AdminProfile />} />
         </Route>
         {/* Waiter */}
         <Route path="/waiter" element={<WaiterLayout />}>

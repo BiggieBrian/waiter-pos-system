@@ -1,17 +1,30 @@
 // src/pages/admin/OrdersPage.jsx
-import { useState } from "react";
-import { mockOrders } from "../../data/mockData";
+import { useState, useEffect } from "react";
+import axios from "axios";
 
 export default function OrdersPage() {
   const [search, setSearch] = useState("");
+  const [orders, setOrders] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 10; // number of rows per page
+  const pageSize = 10;
 
-  // Filter orders
-  const filteredOrders = mockOrders.filter((order) => {
-    const id = String(order.id).toLowerCase();
-    const customer = String(order.customer).toLowerCase();
-    const table = String(order.table).toLowerCase();
+  useEffect(() => {
+    const getOrders = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/api/orders");
+        setOrders(response.data || []);
+      } catch (error) {
+        console.error("Failed to fetch orders:", error);
+      }
+    };
+    getOrders();
+  }, []);
+
+  // Filter orders (by id, customer, table)
+  const filteredOrders = orders.filter((order) => {
+    const id = String(order._id).toLowerCase();
+    const customer = String(order.session?.customerName || "").toLowerCase();
+    const table = String(order.session?.table?.number || "").toLowerCase();
 
     return (
       id.includes(search.toLowerCase()) ||
@@ -52,7 +65,7 @@ export default function OrdersPage() {
           value={search}
           onChange={(e) => {
             setSearch(e.target.value);
-            setCurrentPage(1); // reset to page 1 when searching
+            setCurrentPage(1);
           }}
           className="px-3 py-2 rounded-lg bg-gray-800 border border-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-rose-600"
         />
@@ -60,7 +73,7 @@ export default function OrdersPage() {
 
       {/* Table */}
       <div className="overflow-x-auto">
-        <table className="w-full border-collapse bg-gray-900 rounded-xl overflow-hidden shadow-md">
+        <table className="w-full border-collapse rounded-xl overflow-hidden shadow-md">
           <thead className="bg-gradient-to-r from-rose-600 via-purple-600 to-indigo-600 text-white">
             <tr>
               <th className="px-6 py-3 text-left text-sm font-bold">
@@ -70,6 +83,7 @@ export default function OrdersPage() {
                 Customer
               </th>
               <th className="px-6 py-3 text-left text-sm font-bold">Table</th>
+              <th className="px-6 py-3 text-left text-sm font-bold">Items</th>
               <th className="px-6 py-3 text-left text-sm font-bold">
                 Total (KES)
               </th>
@@ -80,17 +94,44 @@ export default function OrdersPage() {
             {currentOrders.length > 0 ? (
               currentOrders.map((order, index) => (
                 <tr
-                  key={order.id}
+                  key={order._id}
                   className={`${
-                    index % 2 === 0 ? "bg-gray-900" : "bg-gray-800"
+                    index % 2 === 0 ? "bg-gray-900" : "bg-gray-900"
                   } hover:bg-gray-700 transition`}
                 >
-                  <td className="px-6 py-3 text-white">{order.id}</td>
-                  <td className="px-6 py-3 text-white">{order.customer}</td>
-                  <td className="px-6 py-3 text-white">{order.table}</td>
+                  {/* Shortened Order ID */}
+                  <td className="px-6 py-3 text-white">
+                    {order._id.slice(-6).toUpperCase()}
+                  </td>
+
+                  {/* Customer */}
+                  <td className="px-6 py-3 text-white">
+                    {order.session?.customerName || "—"}
+                  </td>
+
+                  {/* Table number */}
+                  <td className="px-6 py-3 text-white">
+                    {order.session?.table?.number || "—"}
+                  </td>
+
+                  {/* Items list */}
+                  <td className="px-6 py-3 text-white">
+                    {order.items.map((item) => (
+                      <div
+                        key={item._id}
+                        className="p-2 bg-gray-800 rounded-xl my-2 text-center"
+                      >
+                        {item.menuItem?.name} × {item.qty}
+                      </div>
+                    ))}
+                  </td>
+
+                  {/* Total */}
                   <td className="px-6 py-3 text-white">
                     {order.total.toLocaleString()}
                   </td>
+
+                  {/* Status */}
                   <td className="px-6 py-3">
                     <span className={getStatusBadge(order.status)}>
                       {order.status}
@@ -101,7 +142,7 @@ export default function OrdersPage() {
             ) : (
               <tr>
                 <td
-                  colSpan="5"
+                  colSpan="6"
                   className="text-center py-6 text-gray-400 italic"
                 >
                   No matching orders found

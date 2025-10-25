@@ -1,0 +1,21 @@
+@font-face {
+  font-family: "Open Sans";
+  src: url("./assets/fonts/OpenSans.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Lobster";
+  src: url("./assets/fonts/Lobster.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+body {
+  font-family: "Open Sans", sans-serif;
+}
+
+.Lobster{
+  font-family: "Lobster", "Open Sans", serif;
+}

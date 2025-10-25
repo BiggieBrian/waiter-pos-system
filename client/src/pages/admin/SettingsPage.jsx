@@ -18,7 +18,7 @@ export default function AdminSettings() {
       <h1 className="text-2xl font-bold mb-4">Settings</h1>
 
       {/* Restaurant Info */}
-      <div className="p-4 bg-gray-900 rounded-lg border border-gray-700 space-y-4">
+      <div className="p-4 space-y-4">
         <h2 className="text-lg font-semibold">Restaurant Information</h2>
         <div className="space-y-2">
           <label className="block text-sm">Restaurant Name</label>
@@ -48,9 +48,9 @@ export default function AdminSettings() {
           />
         </div>
       </div>
-
+      <hr />
       {/* Preferences */}
-      <div className="p-4 bg-gray-900 rounded-lg border border-gray-700 space-y-4">
+      <div className="p-4 space-y-4">
         <h2 className="text-lg font-semibold">Preferences</h2>
         <div className="space-y-2">
           <label className="block text-sm">Currency</label>

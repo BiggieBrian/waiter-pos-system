@@ -103,6 +103,39 @@ export const getActiveSessions = async (req, res) => {
   }
 };
 
+export const getDailyActiveSessions = async (req, res) => {
+  try {
+    // Make sure 'today' is a real Date object
+    const today = new Date();
+
+    // Clone 'today' before modifying hours to avoid reusing the same mutated object
+    const startOfDay = new Date(today);
+    startOfDay.setHours(0, 0, 0, 0);
+
+    const endOfDay = new Date(today);
+    endOfDay.setHours(23, 59, 59, 999);
+
+    console.log({ startOfDay, endOfDay });
+
+
+    // Correct query: filter by both status and createdAt range
+    const sessions = await Session.find({
+      status: "Active",
+      createdAt: { $gte: startOfDay, $lte: endOfDay },
+    }).populate("table waiter");
+
+    res.status(200).json(sessions);
+  } catch (error) {
+    console.error("Error fetching sessions:", error);
+    res.status(500).json({
+      message: "Error fetching sessions",
+      error: error.message,
+    });
+  }
+};
+
+
+
 // Get a single session
 export const getSessionById = async (req, res) => {
   try {
