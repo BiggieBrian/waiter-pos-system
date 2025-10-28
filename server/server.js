@@ -9,6 +9,8 @@ import userRoutes from "./routes/users.routes.js";
 import sessionRoutes from "./routes/session.routes.js";
 import orderRoutes from "./routes/order.routes.js";
 import authRoutes from "./routes/auth.routes.js";
+import paymentRoutes from "./routes/payments.routes.js";
+import categoryRoutes from "./routes/category.routes.js"
 
 dotenv.config();
 const app = express();
@@ -21,7 +23,9 @@ app.use("/api/menu", menuRoutes);
 app.use("/api/tables", tableRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/sessions", sessionRoutes);
+app.use("/api/payments", paymentRoutes)
 app.use("/api/orders", orderRoutes);
+app.use("/api/category", categoryRoutes)
 app.use("/api/auth", authRoutes);
 
 const PORT = config.port;

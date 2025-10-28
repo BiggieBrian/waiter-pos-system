@@ -6,6 +6,7 @@ import toast from "react-hot-toast";
 
 export default function MenuPage() {
   const [menu, setMenu] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [search, setSearch] = useState("");
   const [newItem, setNewItem] = useState({
     name: "",
@@ -16,8 +17,10 @@ export default function MenuPage() {
     imageUrl: "",
     stockQty: 0,
   });
+  const [newCategory, setNewCategory] = useState("");
   const [editingItem, setEditingItem] = useState(null);
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showAddCategoryModal, setShowAddCategoryModal] = useState(false);
 
   useEffect(() => {
     const getMenu = async () => {
@@ -29,6 +32,15 @@ export default function MenuPage() {
       }
     };
     getMenu();
+    const getCategories = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/api/category");
+        setCategories(response.data || []);
+      } catch (error) {
+        console.error("Failed to fetch categories:", error);
+      }
+    };
+    getCategories();
   }, []);
 
   // Filtered list
@@ -42,7 +54,7 @@ export default function MenuPage() {
 
     const create = async () => {
       try {
-        const response = await axios.post("http://localhost:5000/api/menu", {
+        await axios.post("http://localhost:5000/api/menu", {
           name: newItem.name,
           category: newItem.category,
           description: newItem.description,
@@ -66,7 +78,7 @@ export default function MenuPage() {
       stockQty: 0,
     });
     setShowAddModal(false);
-    
+
     toast.success(
       `${newItem.name} added to menu successfully. Refresh the page to see your changes`,
       {
@@ -75,11 +87,50 @@ export default function MenuPage() {
     );
   };
 
+  //Add New Category
+  const handleAddCategory = () => {
+    if (!newCategory) return;
+
+    const create = async () => {
+      try {
+        await axios.post("http://localhost:5000/api/category", {
+          category: newCategory,
+        });
+      } catch (error) {
+        console.error("Failed to create Category:", error);
+      }
+    };
+    create();
+    setNewCategory("");
+    setShowAddCategoryModal(false);
+
+    toast.success(
+      `${newCategory} added successfully. Refresh the page to see your changes`,
+      {
+        duration: 10000,
+      },
+    );
+  };
+
   // Save edited item
   const handleSaveEdit = () => {
-    setMenu(
-      menu.map((item) => (item.id === editingItem.id ? editingItem : item)),
-    );
+    const update = async () => {
+      try {
+        await axios.put(
+          `http://localhost:5000/api/menu/${editingItem._id}`,
+          editingItem,
+        );
+        toast.success(
+          `Refresh the page to see your changes`,
+          {
+            duration: 10000,
+          },
+        );
+      } catch (error) {
+        console.error("Failed to edit item:", error);
+      }
+    };
+    update();
     setEditingItem(null);
   };
 
@@ -87,14 +138,38 @@ export default function MenuPage() {
     <div className="p-4 space-y-6">
       {/* Header */}
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold text-brand">Menu</h2>
+        <h2 className="text-2xl font-bold text-brand">Menu & Categories</h2>
 
-        <button
-          onClick={() => setShowAddModal(true)}
-          className="px-4 py-2 bg-rose-600 rounded-lg hover:bg-rose-700"
-        >
-          Add New Item
-        </button>
+        <div>
+          <button
+            onClick={() => setShowAddCategoryModal(true)}
+            className="px-4 py-2 bg-rose-600 rounded-lg hover:bg-rose-700"
+          >
+            Add New Category
+          </button>
+
+          <button
+            onClick={() => setShowAddModal(true)}
+            className="px-4 py-2  bg-indigo-600 rounded-lg hover:bg-indigo-700 ml-2"
+          >
+            Add New Item
+          </button>
+        </div>
+      </div>
+
+      <div className="flex flex-col justify-center">
+        <div className="flex gap-5 flex-wrap justify-start py-4">
+          {categories.map((category, index) => (
+            <div
+              key={index}
+              className="bg-gray-900 border border-gray-700 rounded-4xl flex flex-col px-8"
+            >
+              <h3 className="text-white text-center py-3 font-semibold">
+                {category.name}
+              </h3>
+            </div>
+          ))}
+        </div>
       </div>
 
       <div className="mb-6">
@@ -145,7 +220,7 @@ export default function MenuPage() {
                 </p>
               </div>
 
-              {/* Bottom Section (sticks to bottom) */}
+              {/* Bottom Section */}
               <div className="flex space-x-2 justify-end mt-auto">
                 <button
                   onClick={() => setEditingItem(item)}
@@ -192,11 +267,11 @@ export default function MenuPage() {
                 }
                 className="mt-1 w-full px-3 py-2 rounded bg-gray-800 text-white border border-gray-700"
               >
-                <option>Main</option>
-                <option>Side</option>
-                <option>Drink</option>
-                <option>Dessert</option>
-                <option>Other</option>
+                {categories.map((category, index) => (
+                  <option key={index} className="py-2">
+                    {category.name}
+                  </option>
+                ))}
               </select>
             </label>
 
@@ -265,6 +340,40 @@ export default function MenuPage() {
         </div>
       )}
 
+      {showAddCategoryModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/70 z-50">
+          <div className="bg-gray-900 p-6 rounded-lg shadow-lg w-96 max-w-[90%] space-y-3">
+            <h3 className="text-lg font-bold text-white">Add New Category</h3>
+            <label className="block text-sm text-gray-300">
+              Category Name
+              <input
+                type="text"
+                value={newCategory}
+                onChange={(e) => {
+                  setNewCategory(e.target.value);
+                }}
+                className="mt-1 w-full px-3 py-2 rounded bg-gray-800 text-white border border-gray-700"
+              />
+            </label>
+
+            <div className="flex justify-end space-x-2 pt-2">
+              <button
+                onClick={() => setShowAddCategoryModal(false)}
+                className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-500"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleAddCategory}
+                className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-500"
+              >
+                Add
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* ✏️ Edit Modal */}
       {editingItem && (
         <div className="fixed inset-0 flex items-center justify-center bg-black/70 z-50">
@@ -292,11 +401,11 @@ export default function MenuPage() {
                 }
                 className="mt-1 w-full px-3 py-2 rounded bg-gray-800 text-white border border-gray-700"
               >
-                <option>Main</option>
-                <option>Side</option>
-                <option>Drink</option>
-                <option>Dessert</option>
-                <option>Other</option>
+                {categories.map((category, index) => (
+                  <option key={index} className="py-2">
+                    {category.name}
+                  </option>
+                ))}
               </select>
             </label>
 

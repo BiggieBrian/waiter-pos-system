@@ -9,17 +9,12 @@ import {
 
 const router = express.Router();
 
-// Create a session
-router.post("/:tableId", createSession);
-
-// Close a session
-router.put("/:id/close", closeSession);
-
-// Get active sessions
+router.get("/today", getDailyActiveSessions)
 router.get("/active", getActiveSessions);
-
+router.post("/:tableId", createSession);
+router.put("/:id/close", closeSession);
 router.get("/:sessionId", getSessionById);
 
-router.get("/today", getDailyActiveSessions)
+
 
 export default router;

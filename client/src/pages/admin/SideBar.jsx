@@ -139,7 +139,7 @@ export default function SideBar({ isOpen, setIsOpen }) {
                 <ChildLink
                   to="/admin/menu"
                   Icon={Utensils}
-                  label="Menu"
+                  label="Menu & Categories"
                   tooltip="Edit and organize the restaurant menu"
                   activeCheck={isActive("/admin/menu")}
                 />

@@ -9,7 +9,7 @@ const menuItemSchema = new mongoose.Schema(
     },
     category: {
       type: String,
-      enum: ["Main", "Side", "Drink", "Dessert", "Other"],
+      category: { type: mongoose.Schema.Types.ObjectId, ref: "Category" },
       required: true,
     },
     description: {

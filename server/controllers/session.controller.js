@@ -1,6 +1,7 @@
 import { Session } from "../models/Session.js";
 import { Table } from "../models/Table.js";
 import { User } from "../models/User.js";
+import { Order } from "../models/Order.js";
 
 // Start a new session
 export const createSession = async (req, res) => {
@@ -64,12 +65,20 @@ export const closeSession = async (req, res) => {
     const session = await Session.findById(id);
     if (!session) return res.status(404).json({ message: "Session not found" });
 
+    //Session Totals
+    const sessionOrders = await Order.find({ session: id });
+    let total = 0;
+    sessionOrders.forEach((i) => {
+      total += i.total || 0;
+    });
+
     // update session
+    session.total = Number(total)
     session.status = "Closed";
     session.endTime = Date.now();
     await session.save();
 
-    // ✅ free the table linked to this session
+
     const table = await Table.findById(session.table);
     if (table) {
       table.status = "Available";

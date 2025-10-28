@@ -10,7 +10,7 @@ export const getAllOrders = async (req, res) => {
         path: "session",
         populate: { path: "table", select: "number" } 
       })
-      .populate("items.menuItem"); 
+      .populate("items.menuItem").sort({createdAt: -1}); 
 
     res.status(200).json(orders);
   } catch (error) {

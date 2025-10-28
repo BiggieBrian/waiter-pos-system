@@ -23,6 +23,11 @@ const sessionSchema = new mongoose.Schema(
       trim: true,
       match: [/^\+?[0-9]{7,15}$/, "Please provide a valid phone number"],
     },
+    total: {
+      type: Number,
+      required: true,
+      default: 0,
+    },
     status: {
       type: String,
       enum: ["Active", "Closed"],
